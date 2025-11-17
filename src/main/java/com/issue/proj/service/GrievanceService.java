@@ -17,9 +17,12 @@ import com.issue.proj.mapper.GrievanceMapper;
 import com.issue.proj.repository.GrievanceRepo;
 import com.issue.proj.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class GrievanceService {
 	
@@ -34,8 +37,11 @@ public class GrievanceService {
 
 	public GrievanceResponseDto createGrievance(GrievanceRequestDto requestDto) {
 		
+		log.info("Creating grievance for user: {}", requestDto.getRaisedBy());
+		
 		Optional<User> user=userRepository.findByEmail(requestDto.getRaisedBy());
 		if(user.isEmpty()) {
+			log.warn("Grievance creating failed - user not found: {}", requestDto.getRaisedBy());
 			throw new RuntimeException("User not registered");
 		}
 		
@@ -49,13 +55,21 @@ public class GrievanceService {
 				.updatedAt(LocalDateTime.now())
 				.build();
 		
+		log.debug("Saving grievance: {}", grievance);
+		
 		Grievance saved=grievanceRepo.save(grievance);
+		
+		log.info("Grievance created successfully with ID: {}", saved.getId());
 		return grievanceMapper.mapToResponse(saved);
 	}
 	
 	public List<GrievanceResponseDto> getGrievanceByUser(String email){
+		
+		log.info("Fetching grievance raised by user: {}", email);
 		Optional<User> user=userRepository.findByEmail(email);
 		if(user.isEmpty()) {
+			
+			log.warn("Fetch failed - user not found: {}", email);
 			throw new RuntimeException("User not registered");
 		}
 		return grievanceRepo.findByRaisedBy(email)
@@ -84,8 +98,11 @@ public class GrievanceService {
 	
 	public GrievanceResponseDto updateGrievanceStatus(Long id, GrievanceStatusUpdateDto statusUpdateDto) {
 		
+		log.info("User updating the raised grievance{}: ",id,statusUpdateDto);
+		
 		Optional<User> user=userRepository.findByEmail(statusUpdateDto.getAssignedTo());
 		if(user.isEmpty()) {
+			log.warn("Updation failed - user not found{}",statusUpdateDto.getAssignedTo());
 			throw new RuntimeException("User not registered");
 		}
 		
