@@ -17,6 +17,7 @@ public class SecurityConfig {
 		.disable()
 		.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
+						"/api/v1/send-otp",
 						"/v3/api-docs/**",
 						"/swagger-ui.html",
                         "/swagger-ui/**",
