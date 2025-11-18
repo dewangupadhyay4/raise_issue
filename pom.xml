@@ -143,6 +143,14 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+
+			<!-- Add the Spring Boot Maven Plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>3.5.7</version> <!-- You can keep this version aligned
+				with your Spring Boot version -->
+			</plugin>
 		</plugins>
 	</build>
 
